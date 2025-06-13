@@ -4,6 +4,9 @@ FROM postgres:15
 COPY conf/postgresql.conf tmp/postgresql.conf
 COPY conf/pg_hba.conf tmp/pg_hba.conf
 
+# создание wal archive
+RUN mkdir -p /var/lib/postgresql/wal_archive
+
 # копирование скрипта инициализации
 COPY scripts/ /docker-entrypoint-initdb.d/
 
