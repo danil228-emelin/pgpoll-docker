@@ -5,8 +5,8 @@ SELECT pg_is_in_recovery();  -- Должно вернуть `true`
 
 node_a: проверить есть ли реплики 
 
-SELECT application_name, state, sync_state 
-FROM pg_stat_replication;
+                                                                SELECT application_name, state, sync_state 
+                                                                FROM pg_stat_replication;
 
 
 с
