@@ -9,4 +9,8 @@ node_a: проверить есть ли реплики
                                                                 FROM pg_stat_replication;
 
 
-с
+
+
+ Проверка статуса узлов в Pgpool
+
+psql -h localhost -p 9999 -U postgres -c "SHOW pool_nodes;"

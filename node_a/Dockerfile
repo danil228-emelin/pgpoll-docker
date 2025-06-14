@@ -1,5 +1,9 @@
 FROM postgres:15
 
+RUN apt-get update && apt-get install -y \
+    postgresql-contrib \
+    && rm -rf /var/lib/apt/lists/*
+
 # копирование конфигов
 COPY conf/postgresql.conf tmp/postgresql.conf
 COPY conf/pg_hba.conf tmp/pg_hba.conf

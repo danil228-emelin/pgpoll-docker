@@ -76,6 +76,49 @@ services:
         ipv4_address: 172.20.0.30
     security_opt:
       - label=disable
+  pgpool:
+    container_name: pgpool
+    build:
+      context: ./pgpool
+    ports:
+      - "9999:9999"
+      - "9898:9898"
+    depends_on:
+      node_a:
+        condition: service_healthy
+      node_b:
+        condition: service_healthy
+      node_c:
+        condition: service_healthy
+    environment:
+       - PGPOOL_ADMIN_USERNAME=admin
+       - PGPOOL_ADMIN_PASSWORD=admin_pass
+       - PGPOOL_SR_CHECK_USER=replicator
+       - PGPOOL_SR_CHECK_PASSWORD=replicator_pass
+       - PGPOOL_HEALTH_CHECK_USER=healthcheck
+       - PGPOOL_HEALTH_CHECK_PASSWORD=healthcheck_pass
+       - PGPOOL_POSTGRES_USERNAME=postgres
+       - PGPOOL_POSTGRES_PASSWORD=postgres
+       - PGPOOL_BACKEND_NODES=0:node_a:5432,1:node_b:5432,2:node_c:5432
+       - PGPOOL_USERNAME=postgres
+       - PGPOOL_PASSWORD=postgres
+       - PGPOOL_USER_CONF_FILE=/opt/bitnami/pgpool/conf/custom.conf
+    networks:
+      pg_net:
+        ipv4_address: 172.20.0.40
+    security_opt:
+      - label=disable
+  pgclient:
+    container_name: pgclient
+    image: postgres:15
+    depends_on:
+      - pgpool
+    networks:
+      pg_net:
+        ipv4_address: 172.20.0.50
+    command: sleep infinity
+    security_opt:
+      - label=disable
     
 networks:
   pg_net:
