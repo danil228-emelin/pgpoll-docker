@@ -58,8 +58,3 @@ VALUES
 
 COMMIT;
 EOSQL
-
-# подстановка кастомных конфигов и restart сервера
-cp /tmp/postgresql.conf $PGDATA/postgresql.conf
-cp /tmp/pg_hba.conf $PGDATA/pg_hba.conf
-pg_ctl restart -D $PGDATA

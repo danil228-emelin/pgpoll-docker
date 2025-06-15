@@ -14,14 +14,10 @@ services:
       - PGLOCALE=en_US.UTF8
       - PGUSERNAME=postgres
       - POSTGRES_PASSWORD=postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    volumes:
+      - ./node_a/data:/var/lib/postgresql/data
     networks:
       pg_net:
-        ipv4_address: 172.20.0.10
     security_opt:
       - label=disable
   node_b:
@@ -40,40 +36,8 @@ services:
       - PGLOCALE=en_US.UTF8
       - PGUSERNAME=postgres
       - POSTGRES_PASSWORD=postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       pg_net:
-        ipv4_address: 172.20.0.20
-    security_opt:
-      - label=disable
-  node_c:
-    image: postgres_replication-rework_node_c:latest
-    container_name: node_c
-    build:
-      context: ./node_c
-    depends_on:
-      node_b:
-        condition: service_healthy
-    ports:
-      - "5436:5432"
-    environment:
-      - PGDATA=/var/lib/postgresql/data
-      - PGENCODING=UTF8
-      - PGLOCALE=en_US.UTF8
-      - PGUSERNAME=postgres
-      - POSTGRES_PASSWORD=postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      pg_net:
-        ipv4_address: 172.20.0.30
     security_opt:
       - label=disable
   pgpool:
@@ -88,8 +52,6 @@ services:
         condition: service_healthy
       node_b:
         condition: service_healthy
-      node_c:
-        condition: service_healthy
     environment:
        - PGPOOL_ADMIN_USERNAME=admin
        - PGPOOL_ADMIN_PASSWORD=admin_pass
@@ -99,13 +61,12 @@ services:
        - PGPOOL_HEALTH_CHECK_PASSWORD=healthcheck_pass
        - PGPOOL_POSTGRES_USERNAME=postgres
        - PGPOOL_POSTGRES_PASSWORD=postgres
-       - PGPOOL_BACKEND_NODES=0:node_a:5432,1:node_b:5432,2:node_c:5432
+       - PGPOOL_BACKEND_NODES=0:node_a:5432,1:node_b:5432,2
        - PGPOOL_USERNAME=postgres
        - PGPOOL_PASSWORD=postgres
        - PGPOOL_USER_CONF_FILE=/opt/bitnami/pgpool/conf/custom.conf
     networks:
       pg_net:
-        ipv4_address: 172.20.0.40
     security_opt:
       - label=disable
   pgclient:

@@ -14,3 +14,29 @@ node_a: проверить есть ли реплики
  Проверка статуса узлов в Pgpool
 
 psql -h localhost -p 9999 -U postgres -c "SHOW pool_nodes;"
+
+
+SELECT pg_read_file('pg_hba.conf');
+
+cat /var/lib/postgresql/data/postgresql.conf
+
+psql -U postgres
+
+SELECT datname FROM pg_database;
+
+
+SELECT current_database();
+
+
+SELECT * FROM pg_roles; \du
+
+
+
+-- Показать все параметры с их текущими значениями
+SELECT name, setting, source, sourcefile 
+FROM pg_settings 
+WHERE source = 'configuration file' 
+AND sourcefile LIKE '%postgresql.conf%';
+
+
+docker run --rm --name pgclient --network=pg_net -it postgres:15 sh
