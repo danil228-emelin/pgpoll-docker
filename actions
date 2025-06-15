@@ -1,0 +1,6 @@
+1)docker up node_a
+2)docker stop node_a 
+3) change configs
+sudo cp node_a/conf/pg_hba.conf node_a/data/pg_hba.conf
+sudo cp node_a/conf/postgresql.conf node_a/data/postgresql.conf
+4)docker start node_a
